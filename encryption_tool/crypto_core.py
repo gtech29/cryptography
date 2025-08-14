@@ -1,10 +1,10 @@
 # crypto_core.py
-
-
-# crypto_core.py
 import os
 
 
+# ==============================
+# File Handling
+# ==============================
 def read_file(file_path):
     """Read and return the contents of a text file."""
     try:
@@ -41,21 +41,38 @@ def write_file(file_path, data, mode):
         return None
 
 
+# ==============================
+# Caesar Cipher
+# ==============================
 def caesar_encrypt(text, key):
     """Encrypt text using Caesar cipher."""
-    pass
+    result = ""
+    for char in text:
+        if char.isalpha():
+            shift = key % 26  # keep within alphabet range
+            base = ord("A") if char.isupper() else ord("a")
+            result += chr((ord(char) - base + shift) % 26 + base)
+        else:
+            result += char
+    return result
 
 
 def caesar_decrypt(text, key):
     """Decrypt text using Caesar cipher."""
-    pass
+    return caesar_encrypt(text, -key)  # reverse shift
 
 
+# ==============================
+# XOR Cipher
+# ==============================
 def xor_encrypt(text, key):
-    """Encrypt text using XOR cipher."""
-    pass
+    """Encrypt text using XOR cipher with an integer key."""
+    result_chars = []
+    for char in text:
+        result_chars.append(chr(ord(char) ^ key))
+    return "".join(result_chars)
 
 
 def xor_decrypt(text, key):
-    """Decrypt text using XOR cipher."""
-    pass
+    """Decrypt text using XOR cipher (same as encryption)."""
+    return xor_encrypt(text, key)

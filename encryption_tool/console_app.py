@@ -3,6 +3,9 @@ import os
 from crypto_core import *
 
 
+# ==============================
+# Input Validation Helpers
+# ==============================
 def get_mode():
     while True:
         mode = input("Choose mode (encrypt/decrypt): ").strip().lower()
@@ -27,10 +30,9 @@ def get_key(cipher):
                 return int(key)
             print("For Caesar cipher, key must be an integer.")
         else:
-            # For XOR, you can allow either int or string key
-            if key:
-                return key
-            print("Key cannot be empty.")
+            if key.isdigit():  # Keep XOR key as integer for simplicity
+                return int(key)
+            print("For XOR cipher, key must be an integer.")
 
 
 def get_file_path():
@@ -41,17 +43,40 @@ def get_file_path():
         print("File not found. Try again.")
 
 
+# ==============================
+# Main Program
+# ==============================
 def main():
-    print("\n=== Encryption Tool ===\n")
+    print("\n=== File Encryption Tool ===\n")
+
+    # Get user inputs
     mode = get_mode()
     cipher = get_cipher()
     key = get_key(cipher)
     file_path = get_file_path()
 
-    print(f"\nMode: {mode}")
-    print(f"Cipher: {cipher}")
-    print(f"Key: {key}")
-    print(f"File: {file_path}")
+    # Read file
+    file_content = read_file(file_path)
+    if file_content is None:
+        print("Error: Could not read file.")
+        return
+
+    # Process content
+    if cipher == "caesar":
+        result = (
+            caesar_encrypt(file_content, key)
+            if mode == "encrypt"
+            else caesar_decrypt(file_content, key)
+        )
+    elif cipher == "xor":
+        result = (
+            xor_encrypt(file_content, key)
+            if mode == "encrypt"
+            else xor_decrypt(file_content, key)
+        )
+
+    # Save result
+    write_file(file_path, result, mode)
 
 
 if __name__ == "__main__":
